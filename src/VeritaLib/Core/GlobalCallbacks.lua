@@ -70,15 +70,16 @@ local GlobalCallbacks = {
 }
 
 if not CALLBACKS_INITIALIZED then
-    local Context = require("<Graphics.Context")
+    ---@module 'Graphics'
+    local Graphics = require("<Graphics")
     local Window = require(".Window")
-    ---@type vlib.Graphics.Context
     local global_ctx
 
     -- Callbacks that don't change with debug status
 
     function GameInit()
-        global_ctx = Context("Global Rendering Context", {
+        Graphics.Images.Init()
+        global_ctx = Graphics.Context("Global Rendering Context", {
             view_mode = "2d",
             view_data = {
                 0, vlib_conf.target_res.width,
@@ -145,6 +146,7 @@ if not CALLBACKS_INITIALIZED then
 
         function RenderFunc()
             lstg.BeginScene()
+            Graphics.Images.Update()
             global_ctx.begin()
             GlobalCallbacks.Render()
             global_ctx.apply()
@@ -172,6 +174,7 @@ if not CALLBACKS_INITIALIZED then
 
         function RenderFunc()
             lstg.BeginScene()
+            Graphics.Images.Update()
             global_ctx.begin()
             GlobalCallbacks.Render()
             global_ctx.apply()
