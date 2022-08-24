@@ -12,7 +12,7 @@
 ---@field windowed boolean
 local Window = {}
 
-local Config = require("Config")
+local Config = require(".Config")
 
 local current_video_settings = {}
 

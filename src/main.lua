@@ -1,3 +1,4 @@
-package.path = package.path .. "src/?/init.lua;"
+
+lstg.DoFile("src/loader.lua")
 
 require("VeritaLib")

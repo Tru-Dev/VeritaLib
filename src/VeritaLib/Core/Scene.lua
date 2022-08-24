@@ -2,7 +2,7 @@
 --- A wrapper for a global state, such as the main menu, gameplay, staff roll, etc.
 ---@class vlib.Core.Scene: vlib.Core.LogicObject
 
-local Class = require("LogicClass")
+local Class = require(".LogicClass")
 
 ---@class vlib.Core.Scene.Class: vlib.Core.LogicClass
 ---@operator call(...): vlib.Core.Scene

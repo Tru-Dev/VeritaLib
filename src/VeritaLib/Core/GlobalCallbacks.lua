@@ -9,7 +9,7 @@ local GlobalCallbacks = {
     --- Called in `GameInit`.
     Init = function()
         lstg.LoadTTF("Arial", "C:/Windows/Fonts/arial.ttf", 64, 64)
-        local Class = require("GameClass")
+        local Class = require(".GameClass")
         -- Anonymous class
         Class {
             {
@@ -36,7 +36,7 @@ local GlobalCallbacks = {
     --- Called in `FrameFunc`.
     ---@return boolean @Whether to exit the game or not.
     Frame = function()
-        local Window = require("Window")
+        local Window = require(".Window")
         lstg.ObjFrame()
         lstg.BoundCheck()
         lstg.UpdateXY()
@@ -70,8 +70,9 @@ local GlobalCallbacks = {
 }
 
 if not CALLBACKS_INITIALIZED then
-    local Context = require("VeritaLib.Graphics.Context")
-    local Window = require("Window")
+    local Context = require("<Graphics.Context")
+    local Window = require(".Window")
+    ---@type vlib.Graphics.Context
     local global_ctx
 
     -- Callbacks that don't change with debug status

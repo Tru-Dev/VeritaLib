@@ -4,7 +4,7 @@
 ---@field [string] any
 local Config = {}
 
-local JsonTable = require("JsonTable")
+local JsonTable = require(".JsonTable")
 
 --- Saves the current configuration.
 ---@return boolean
