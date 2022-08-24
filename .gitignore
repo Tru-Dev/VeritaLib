@@ -9,6 +9,7 @@ xaudio2_9redist.dll
 
 *.log
 config.json
+imgui.ini
 
 # IDE
 
