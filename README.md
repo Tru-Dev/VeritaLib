@@ -29,7 +29,6 @@ If you're using VS Code, you should get intellisense if you install the
 ## Features (work in progress)
 - [X] [Intuitive OOP for game behavior and data classes](doc/Core/Classes.md)
 - [ ] Scene/stage system to manage resource scopes
-- [ ] 
 
 ## FAQ
 - Is this supposed to replace THlib?  
