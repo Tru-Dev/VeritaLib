@@ -1,0 +1,3 @@
+[submodule "lstg-doc"]
+	path = lstg-doc
+	url = https://github.com/Tru-Dev/LuaSTG-Sub-Documentation

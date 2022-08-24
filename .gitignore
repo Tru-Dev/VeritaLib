@@ -1,0 +1,15 @@
+
+# LuaSTG executable
+
+*.exe
+d3dcompiler_47.dll
+xaudio2_9redist.dll
+
+# Produced by LuaSTG
+
+*.log
+config.json
+
+# IDE
+
+.vscode/
