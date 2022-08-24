@@ -96,7 +96,7 @@ function Context(name, init)
     end
 
     if init.view_mode then
-        init.view_mode = string.lower(init.view_mode)
+        init.view_mode = init.view_mode:lower()
     end
 
     --- Defines a rendering context. All fields are read-only.
