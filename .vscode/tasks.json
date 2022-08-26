@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build VeritaLib",
+            "type": "shell",
+            "command": ".\\LuaSTG.exe",
+            "args": [ "--compile-vlib", "--no-run", "--log-window" ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "never",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false,
+                "revealProblems": "onProblem"
+            },
+            "problemMatcher": [
+                {
+                    "severity": "error",
+                    "pattern": [
+                        {
+                            "regexp": "\\[string \"(.*?)(:(.*))?\"\\]:(.+): (.*)",
+                            "file": 1,
+                            "code": 3,
+                            "line": 4,
+                            "message": 5,
+                        }
+                    ],
+                    "source": "LuaSTG",
+                    "owner": "LuaSTG"
+                }
+            ]
+        }
+    ]
+}

@@ -59,27 +59,26 @@ function Window.UpdateInternalVideoConfig(width, height, windowed)
     if Config.window_scaling == "stretch" then
         current_video_settings.main_viewport = { 0, width, 0, height }
     else
-        local target_res = require("vlib_conf").target_res
-        local target_aspect = target_res.width / target_res.height
+        local target_aspect = $(config.target_res.width) / $(config.target_res.height)
         if height == 0 then
             height = 1
         end
         local window_aspect = width / height
         if window_aspect >= target_aspect then -- window is too wide, or is just right
-            local scale = height / target_res.height
+            local scale = height / $(config.target_res.height)
             current_video_settings.main_viewport = {
-                width / 2 - target_res.width * scale / 2,
-                width / 2 + target_res.width * scale / 2,
+                width / 2 - $(config.target_res.width) * scale / 2,
+                width / 2 + $(config.target_res.width) * scale / 2,
                 0,
                 height
             }
         else -- window is too narrow
-            local scale = width / target_res.width
+            local scale = width / $(config.target_res.width)
             current_video_settings.main_viewport = {
                 0,
                 width,
-                height / 2 - target_res.height * scale / 2,
-                height / 2 + target_res.height * scale / 2
+                height / 2 - $(config.target_res.height) * scale / 2,
+                height / 2 + $(config.target_res.height) * scale / 2
             }
         end
     end

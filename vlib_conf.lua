@@ -1,5 +1,5 @@
 
---- Stores VeritaLib configuration, such as debug mode behaviors and target resolution.
+--- Stores VeritaLib preprocessor configuration, such as debug mode behaviors and target resolution.
 ---@class vlib_conf
 local vlib_conf = {
     --------- Debug ---------
@@ -11,8 +11,6 @@ local vlib_conf = {
 
         --- The rest of the fields in this table will be ignored if enable is false.
 
-        --- Whether to show the debug UI by default. It can be toggled by F12 in debug mode.
-        show_ui = false,
     },
 
 
@@ -20,6 +18,15 @@ local vlib_conf = {
 
     --- Game-specific default values for `config.json`.
     default_config = {},
+
+    --------- Source Result ---------
+
+    --- Whether to remove comments in the output.  
+    --- Implied by `minify`.
+    no_comments = false,
+
+    --- Whether to minify the Lua files (removes comments + insignificant whitespace).
+    minify = false,
 
     --------- Viewport ---------
 

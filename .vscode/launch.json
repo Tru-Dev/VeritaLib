@@ -1,0 +1,23 @@
+{
+    "configurations": [
+        {
+            "type": "lua-local",
+            "request": "launch",
+            "name": "Debug VeritaLib Project",
+            "program": {
+                "command": "LuaSTG.exe",
+                "communication": "pipe",
+            },
+            "scriptRoots": [
+                "build/"
+            ],
+            "scriptFiles": [
+                "build/**/*.lua"
+            ],
+            "args": [
+                "--log-window",
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

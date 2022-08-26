@@ -1,0 +1,72 @@
+-----------------------------------
+-- VeritaLib builder launch file --
+-----------------------------------
+
+-- error("test")
+
+local run_main = true
+local compile_vlib = false
+local run_tests = false
+
+for _, arg in ipairs(lstg.args) do
+    if arg == "--compile-vlib" then
+        compile_vlib = true
+    end
+    if arg == "--run-tests" then
+        run_tests = true
+        run_main = false
+    end
+    if arg == "--no-run" then
+        run_main = false
+    end
+end
+
+if compile_vlib then
+    local build = lstg.DoFile("build_vlib.lua")
+    build.preprocessAll("src", "build/src")
+end
+if run_tests or run_main then
+    local config_file = io.open("config.json", "r")
+    if config_file then
+        local config_json = config_file:read("*a")
+        local config = cjson.decode(config_json)
+        config_file:close()
+        lstg.SetWindowed(config.windowed)
+        lstg.SetVsync(config.vsync)
+        if config.windowed then
+            lstg.SetResolution(
+                config.window_size.width,
+                config.window_size.height,
+                config.refresh_rate_numerator,
+                config.refresh_rate_denominator
+            )
+        else
+            lstg.SetResolution(
+                config.fullscreen_resolution.width,
+                config.fullscreen_resolution.height,
+                config.refresh_rate_numerator,
+                config.refresh_rate_denominator
+            )
+        end
+        if config.gpu ~= "" then
+            lstg.SetPreferenceGPU(config.gpu, config.dgpu_trick)
+        end
+    end
+    if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+        local lua_path = os.getenv("LUA_PATH")
+        if lua_path then
+            package.path = package.path .. ";" .. lua_path
+            require("lldebugger").start()
+        end
+    end
+else
+    function FrameFunc()
+        return true
+    end
+end
+if run_tests then
+    -- no tests yet
+end
+if run_main then
+    lfs.chdir("build/")
+end

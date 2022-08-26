@@ -11,6 +11,6 @@ xaudio2_9redist.dll
 config.json
 imgui.ini
 
-# IDE
+# Build files
 
-.vscode/
+build/

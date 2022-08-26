@@ -1,3 +1,20 @@
+#local indent = 8
+#local function macro_unpack_keys(t)
+#   local ret = ""
+#   for k, v in pairs(t) do
+#       _put((" "):rep(indent) .. k .. " = ")
+#       if type(v) == "table" then
+#           _put("{\n")
+#           indent = indent + 4
+#           macro_unpack_keys(v)
+#           indent = indent - 4
+#           _put((" "):rep(indent) .. "},\n")
+#       else
+#           _put(("%q,\n"):format(v))
+#       end
+#   end
+#end
+
 
 --- Reads and stores variables in `config.json`.
 ---@class vlib.Core.Config: vlib.Core.JsonTable
@@ -40,7 +57,6 @@ do
         return t1
     end
 
-    local vlib_conf = require("vlib_conf")
     config_table = merge(config_table, {
         dgpu_trick = false,
         gpu = "",
@@ -57,8 +73,8 @@ do
         windowed = true,
         vsync = false,
         window_scaling = "aspect",
+#macro_unpack_keys(config.default_config)
     })
-    config_table = merge(config_table, vlib_conf.default_config)
 end
 
 Config = JsonTable.New(config_table, Config) --[[@as vlib.Core.Config]]

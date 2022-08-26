@@ -91,8 +91,7 @@ function Context(name, init)
         if init.height ~= nil then
             error("You must specify width and height together, not one or the other.")
         end
-        local vlib_conf = require("vlib_conf")
-        w, h = vlib_conf.target_res.width, vlib_conf.target_res.height
+        w, h = $(config.target_res.width), $(config.target_res.height)
     end
 
     if init.view_mode then
