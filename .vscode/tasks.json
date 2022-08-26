@@ -28,8 +28,8 @@
                             "message": 5,
                         }
                     ],
-                    "source": "LuaSTG",
-                    "owner": "LuaSTG"
+                    "source": "VeritaLib Preprocessor",
+                    "owner": "VeritaLib Preprocessor"
                 }
             ]
         }
