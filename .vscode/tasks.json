@@ -4,7 +4,7 @@
         {
             "label": "Build VeritaLib",
             "type": "shell",
-            "command": ".\\LuaSTG.exe",
+            "command": ".\\LuaSTG-Console.exe",
             "args": [ "--compile-vlib", "--no-run", "--log-window" ],
             "group": "build",
             "presentation": {

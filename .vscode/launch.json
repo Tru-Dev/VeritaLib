@@ -5,19 +5,13 @@
             "request": "launch",
             "name": "Debug VeritaLib Project",
             "program": {
-                "command": "LuaSTG.exe",
-                "communication": "pipe",
+                "command": "LuaSTG-Console.exe",
+                "communication": "stdio",
             },
-            "scriptRoots": [
-                "build/"
-            ],
             "scriptFiles": [
-                "build/**/*.lua"
-            ],
-            "args": [
-                "--log-window",
+                "build/**/*.lua",
             ],
             "cwd": "${workspaceFolder}"
         }
-    ]
+    ],
 }
