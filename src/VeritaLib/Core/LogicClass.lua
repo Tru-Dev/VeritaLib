@@ -139,6 +139,9 @@ objmeta = {
         return self:call(...)
     end,
     __tostring = function(self)
+        if not self.tostring then
+            return "LogicObject"
+        end
         return self:tostring()
     end,
     __unm = function(self)
