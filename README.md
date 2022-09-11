@@ -4,7 +4,6 @@
 VeritaLib is a framework meant for use in LuaSTG Sub.
 
 - [Download/Setup](#downloadsetup)
-  - [Customization](#customization)
 - [Usage](#usage)
 - [Documentation](#documentation)
 - [Features (work in progress)](#features-work-in-progress)
@@ -15,25 +14,16 @@ VeritaLib is a framework meant for use in LuaSTG Sub.
 ## Download/Setup
 > TODO: Make releases page
 
-Head over to the releases page and download a zip file. The chosen zip file should include a
+Head over to the releases page and download the first zip file in the list. It should include a
 [specially-designed copy of LuaSTG Sub](https://github.com/Tru-Dev/LuaSTG-Sub/tree/verita) and a
 copy of VeritaLib.
 
-There should be multiple zip files. Each one will have a different configuration:
-- Release builds: Built with debug disabled.
-- Minified builds: Same as release but with comments and (most) whitespace removed.  
-  Useful for a release version of a game.
-- Debug builds: Built with debug enabled.
-- Custom: Customize your build to your needs. Described in the section below.
+The project is configured to build and debug automatically under Visual Studio Code.
+It should prompt you to install the recommended extensions if you do not already have them.
 
-### Customization
-If you are to grab the custom build (or download the source directly and bring in a
-VeritaLib-compatible LuaSTG Sub build), you can open the folder in Visual Studio Code, and
-provided you have the [sumneko Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) and
-[Local Lua Debugger](https://marketplace.visualstudio.com/items?itemName=tomblind.local-lua-debugger-vscode)
-extensions, it should be able to build, launch, and debug through VS Code in its current state.
-
-The preprocessor options are defined and described in `vlib_conf.lua`. Feel free to edit them as needed.
+VeritaLib uses a Lua preprocessor to allow easy customization. A description of the options is
+available [here](doc/Config.md). They are also defined and described in `vlib_conf.lua`,
+feel free to edit them as needed.
 
 ## Usage
 > TODO: Make it usable
@@ -46,6 +36,7 @@ If you're using VS Code, you should get intellisense if you install the
 
 ## Features (work in progress)
 - [X] [Intuitive OOP for game behavior and data classes](doc/Core/Classes.md)
+- [X] Graphics contexts to facilitate shaders, render targets, and 2D/3D viewports
 - [ ] Scene/stage system to manage resource scopes
 
 ## FAQ
