@@ -126,6 +126,7 @@ if not CALLBACKS_INITIALIZED then
     local f12_pressed = false
 
     function FrameFunc()
+        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
         imgui.backend.NewFrame()
         imgui.ImGui.NewFrame()
         local Keyboard = lstg.Input.Keyboard
@@ -162,6 +163,7 @@ if not CALLBACKS_INITIALIZED then
     end
 #else
     function FrameFunc()
+        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
         return GlobalCallbacks.Frame()
     end
 

@@ -8,6 +8,8 @@
 ---@class Images
 local Images = {}
 
+Images.loaded = false
+
 function Images.Init()
     lstg.CreateRenderTarget("internal:white", 16, 16)
     lstg.CreateRenderTarget("internal:black", 16, 16)
@@ -19,15 +21,18 @@ function Images.Init()
 end
 
 function Images.Update()
-    lstg.PushRenderTarget("internal:white")
-    lstg.RenderClear(lstg.Color(0xFFFFFFFF))
-    lstg.PopRenderTarget()
-    lstg.PushRenderTarget("internal:black")
-    lstg.RenderClear(lstg.Color(0xFF000000))
-    lstg.PopRenderTarget()
-    lstg.PushRenderTarget("internal:void")
-    lstg.RenderClear(lstg.Color(0x00000000))
-    lstg.PopRenderTarget()
+    if not Images.loaded then
+        lstg.PushRenderTarget("internal:white")
+        lstg.RenderClear(lstg.Color(0xFFFFFFFF))
+        lstg.PopRenderTarget()
+        lstg.PushRenderTarget("internal:black")
+        lstg.RenderClear(lstg.Color(0xFF000000))
+        lstg.PopRenderTarget()
+        lstg.PushRenderTarget("internal:void")
+        lstg.RenderClear(lstg.Color(0x00000000))
+        lstg.PopRenderTarget()
+        Images.loaded = true
+    end
 end
 
 return Images
