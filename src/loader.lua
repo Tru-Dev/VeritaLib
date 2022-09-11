@@ -13,7 +13,7 @@
 --- - Get the current module name from `package.current_module` (fully qualified name)
 
 --- Configuration and state for the Smart Lua Loader
-local sll = {
+package.sll = {
     --- Configuration
 
     --- Path prefixes to search.
@@ -36,6 +36,8 @@ local sll = {
 
     loaded = {},
 }
+
+local sll = package.sll
 
 package.current_path = ""
 package.current_module = ""
