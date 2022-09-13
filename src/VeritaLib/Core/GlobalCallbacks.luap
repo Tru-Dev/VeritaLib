@@ -125,56 +125,34 @@ if not CALLBACKS_INITIALIZED then
 
 #if config.debug.enable then
     local Debug = require("<Debug")
-
-    function FrameFunc()
-        xinput.refresh()
-        xinput.update()
-        Debug.Update()
-        return GlobalCallbacks.Frame()
-    end
-
-    function RenderFunc()
-        lstg.BeginScene()
-        Graphics.Images.Update()
-        global_ctx.begin()
-        GlobalCallbacks.Render()
-        global_ctx.apply()
-        lstg.RenderClear(lstg.Color(0xFF000000))
-        lstg.SetFog()
-        lstg.SetScissorRect(0, Window.width, 0, Window.height)
-        lstg.SetImageScale(1)
-        lstg.SetViewport(unpack(Window.main_viewport))
-        lstg.SetOrtho(0, 1, 0, 1)
-        lstg.RenderRect("Global Rendering Context", 0, 1, 0, 1)
-        imgui.ImGui.Render()
-        imgui.backend.RenderDrawData()
-        lstg.EndScene()
-    end
-#else
-    function FrameFunc()
-        xinput.refresh()
-        xinput.update()
-        return GlobalCallbacks.Frame()
-    end
-
-    function RenderFunc()
-        lstg.BeginScene()
-        Graphics.Images.Update()
-        global_ctx.begin()
-        GlobalCallbacks.Render()
-        global_ctx.apply()
-        lstg.RenderClear(lstg.Color(0xFF000000))
-        lstg.SetFog()
-        lstg.SetScissorRect(0, Window.width, 0, Window.height)
-        lstg.SetImageScale(1)
-        lstg.SetViewport(unpack(Window.main_viewport))
-        lstg.SetOrtho(0, 1, 0, 1)
-        lstg.RenderRect("Global Rendering Context", 0, 1, 0, 1)
-        imgui.ImGui.Render()
-        imgui.backend.RenderDrawData()
-        lstg.EndScene()
-    end
 #end
+
+    function FrameFunc()
+        xinput.refresh()
+        xinput.update()
+#if config.debug.enable then
+        Debug.Update()
+#end
+        return GlobalCallbacks.Frame()
+    end
+
+    function RenderFunc()
+        lstg.BeginScene()
+        Graphics.Images.Update()
+        global_ctx.begin()
+        GlobalCallbacks.Render()
+        global_ctx.apply()
+        lstg.RenderClear(lstg.Color(0xFF000000))
+        lstg.SetFog()
+        lstg.SetScissorRect(0, Window.width, 0, Window.height)
+        lstg.SetImageScale(1)
+        lstg.SetViewport(unpack(Window.main_viewport))
+        lstg.SetOrtho(0, 1, 0, 1)
+        lstg.RenderRect("Global Rendering Context", 0, 1, 0, 1)
+        imgui.ImGui.Render()
+        imgui.backend.RenderDrawData()
+        lstg.EndScene()
+    end
 
     CALLBACKS_INITIALIZED = true
 end
