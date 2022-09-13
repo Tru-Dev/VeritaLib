@@ -1,4 +1,10 @@
 
+local Window = require(".Window")
+local Input = require(".Input")
+local Graphics = require("<Graphics")
+local imgui = require("imgui")
+local xinput = require("xinput")
+
 --- Stores the functions that the LuaSTG engine callbacks call.  
 --- Minimal default behavior is provided.  
 --- An extension library may override these.
@@ -34,7 +40,8 @@ local GlobalCallbacks = {
     --- Called in `FrameFunc`.
     ---@return boolean @Whether to exit the game or not.
     Frame = function()
-        local Window = require(".Window")
+        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
+        Input.UpdateContext("menu")
         lstg.ObjFrame()
         lstg.BoundCheck()
         lstg.UpdateXY()
@@ -68,9 +75,6 @@ local GlobalCallbacks = {
 }
 
 if not CALLBACKS_INITIALIZED then
-    ---@module 'Graphics'
-    local Graphics = require("<Graphics")
-    local Window = require(".Window")
     local global_ctx
 
     -- Callbacks that don't change with debug status
@@ -120,28 +124,13 @@ if not CALLBACKS_INITIALIZED then
     end
 
 #if config.debug.enable then
-    local imgui = require("imgui")
-    local show_ui = false
-    -- temporary fix until input module is implemented
-    local f12_pressed = false
+    local Debug = require("<Debug")
 
     function FrameFunc()
-        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
-        imgui.backend.NewFrame()
-        imgui.ImGui.NewFrame()
-        local Keyboard = lstg.Input.Keyboard
-        if Keyboard.GetKeyState(Keyboard.F12) and not f12_pressed then
-            show_ui = not show_ui
-        end
-        f12_pressed = Keyboard.GetKeyState(Keyboard.F12)
-        if show_ui then
-            imgui.backend.ShowFrameStatistics()
-            imgui.backend.ShowResourceManagerDebugWindow()
-            -- imgui.backend.ShowTestInputWindow()
-        end
-        local exit = GlobalCallbacks.Frame()
-        imgui.ImGui.EndFrame()
-        return exit
+        xinput.refresh()
+        xinput.update()
+        Debug.Update()
+        return GlobalCallbacks.Frame()
     end
 
     function RenderFunc()
@@ -163,7 +152,8 @@ if not CALLBACKS_INITIALIZED then
     end
 #else
     function FrameFunc()
-        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
+        xinput.refresh()
+        xinput.update()
         return GlobalCallbacks.Frame()
     end
 
@@ -180,6 +170,8 @@ if not CALLBACKS_INITIALIZED then
         lstg.SetViewport(unpack(Window.main_viewport))
         lstg.SetOrtho(0, 1, 0, 1)
         lstg.RenderRect("Global Rendering Context", 0, 1, 0, 1)
+        imgui.ImGui.Render()
+        imgui.backend.RenderDrawData()
         lstg.EndScene()
     end
 #end

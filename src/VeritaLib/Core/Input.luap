@@ -1,0 +1,322 @@
+
+---@class vlib.Core.Input Input module.
+local Input = {
+    schema = {
+#for ctx, ctx_dat in pairs(config.input_commands) do
+#   local indent = 8
+#   _put((" "):rep(indent) .. ctx .. " = {\n")
+#   indent = indent + 4
+#   if ctx_dat.__multi and ctx_dat.__multi > 1 then
+#       _put((" "):rep(indent) .. ("__multi = %s,\n"):format(tostring(ctx_dat.__multi)))
+#   end
+#   for inp, inp_dat in pairs(ctx_dat) do
+#       if inp ~= "__multi" then
+#           _put((" "):rep(indent) .. ("%s = %q,\n"):format(inp, inp_dat.type))
+#       end
+#   end
+#   indent = indent - 4
+#   _put((" "):rep(indent) .. "},\n")
+#end
+    },
+#local function mkState()
+#   for ctx, ctx_dat in pairs(config.input_commands) do
+#       local indent = 8
+#       _put((" "):rep(indent) .. ctx .. " = {\n")
+#       indent = indent + 4
+#       if ctx_dat.__multi and ctx_dat.__multi > 1 then
+#           for _ = 1, ctx_dat.__multi do
+#               _put((" "):rep(indent) .. "{\n")
+#               for inp, inp_dat in pairs(ctx_dat) do
+#                   indent = indent + 4
+#                   if inp ~= "__multi" then
+#                       if inp_dat.type == "button" then
+#                           _put((" "):rep(indent) .. ("%s = false,\n"):format(inp))
+#                       elseif inp_dat.type == "directional" then
+#                           _put((" "):rep(indent) .. inp .. " = {\n")
+#                           indent = indent + 4
+#                           _put((" "):rep(indent) .. "up = false,\n")
+#                           _put((" "):rep(indent) .. "down = false,\n")
+#                           _put((" "):rep(indent) .. "left = false,\n")
+#                           _put((" "):rep(indent) .. "right = false,\n")
+#                           indent = indent - 4
+#                           _put((" "):rep(indent) .. "},\n")
+#                       elseif inp_dat.type == "analog" then
+#                           _put((" "):rep(indent) .. inp .. " = {\n")
+#                           indent = indent + 4
+#                           _put((" "):rep(indent) .. "up = false,\n")
+#                           _put((" "):rep(indent) .. "down = false,\n")
+#                           _put((" "):rep(indent) .. "left = false,\n")
+#                           _put((" "):rep(indent) .. "right = false,\n")
+#                           _put((" "):rep(indent) .. "x = 0,\n")
+#                           _put((" "):rep(indent) .. "y = 0,\n")
+#                           indent = indent - 4
+#                           _put((" "):rep(indent) .. "},\n")
+#                       end
+#                   end
+#                   indent = indent - 4
+#               end
+#               _put((" "):rep(indent) .. "},\n")
+#           end
+#       end
+#       for inp, inp_dat in pairs(ctx_dat) do
+#           if inp ~= "__multi" then
+#               if inp_dat.type == "button" then
+#                   _put((" "):rep(indent) .. ("%s = false,\n"):format(inp))
+#               elseif inp_dat.type == "directional" then
+#                   _put((" "):rep(indent) .. inp .. " = {\n")
+#                   indent = indent + 4
+#                   _put((" "):rep(indent) .. "up = false,\n")
+#                   _put((" "):rep(indent) .. "down = false,\n")
+#                   _put((" "):rep(indent) .. "left = false,\n")
+#                   _put((" "):rep(indent) .. "right = false,\n")
+#                   indent = indent - 4
+#                   _put((" "):rep(indent) .. "},\n")
+#               elseif inp_dat.type == "analog" then
+#                   _put((" "):rep(indent) .. inp .. " = {\n")
+#                   indent = indent + 4
+#                   _put((" "):rep(indent) .. "up = false,\n")
+#                   _put((" "):rep(indent) .. "down = false,\n")
+#                   _put((" "):rep(indent) .. "left = false,\n")
+#                   _put((" "):rep(indent) .. "right = false,\n")
+#                   _put((" "):rep(indent) .. "x = 0,\n")
+#                   _put((" "):rep(indent) .. "y = 0,\n")
+#                   indent = indent - 4
+#                   _put((" "):rep(indent) .. "},\n")
+#               end
+#           end
+#       end
+#       indent = indent - 4
+#       _put((" "):rep(indent) .. "},\n")
+#   end
+#end
+    prevState = {
+#mkState()
+    },
+    state = {
+#mkState()
+    },
+}
+
+local Config = require(".Config")
+local Lkey = lstg.Input.Keyboard
+local xinp = require("xinput")
+
+-- Internal functions
+
+local function update_single_input(ctx, inp, inp_type, tbl, c_idx)
+    local function xGetKeyStateAuto(k)
+        if c_idx then
+            return xinp.getKeyState(c_idx, k)
+        end
+        return xinp.getKeyState(k)
+    end
+    if inp_type == "button" then
+        Input.prevState[ctx][inp] = Input.state[ctx][inp]
+        Input.state[ctx][inp] =
+            (tbl[inp].keyboard and Lkey.GetKeyState(Lkey[tbl[inp].keyboard])) or
+            (tbl[inp].gamepad and xGetKeyStateAuto(xinp[tbl[inp].gamepad]))
+    elseif inp_type == "directional" then
+        Input.prevState[ctx][inp].up = Input.state[ctx][inp].up
+        Input.prevState[ctx][inp].down = Input.state[ctx][inp].down
+        Input.prevState[ctx][inp].left = Input.state[ctx][inp].left
+        Input.prevState[ctx][inp].right = Input.state[ctx][inp].right
+
+        Input.state[ctx][inp].up = false
+        Input.state[ctx][inp].down = false
+        Input.state[ctx][inp].left = false
+        Input.state[ctx][inp].right = false
+        if tbl[inp].keyboard then
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.up])
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.down])
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.left])
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.right])
+        end
+        if tbl[inp].gamepad then
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or xGetKeyStateAuto(xinp[tbl[inp].gamepad.up])
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or xGetKeyStateAuto(xinp[tbl[inp].gamepad.down])
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or xGetKeyStateAuto(xinp[tbl[inp].gamepad.left])
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or xGetKeyStateAuto(xinp[tbl[inp].gamepad.right])
+        end
+        if tbl[inp].joystick == "left" or tbl[inp].joystick == "both" then
+            local xval
+            local yval
+            if c_idx then
+                xval = xinp.getLeftThumbX(c_idx)
+                yval = xinp.getLeftThumbY(c_idx)
+            else
+                xval = xinp.getLeftThumbX()
+                yval = xinp.getLeftThumbY()
+            end
+            local dir_threshold = Config.dir_threshold
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or yval > dir_threshold
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or yval < -dir_threshold
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or xval > dir_threshold
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or xval < -dir_threshold
+        end
+        if tbl[inp].joystick == "right" or tbl[inp].joystick == "both" then
+            local xval
+            local yval
+            if c_idx then
+                xval = xinp.getRightThumbX(c_idx)
+                yval = xinp.getRightThumbY(c_idx)
+            else
+                xval = xinp.getRightThumbX()
+                yval = xinp.getRightThumbY()
+            end
+            local dir_threshold = Config.dir_threshold
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or yval > dir_threshold
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or yval < -dir_threshold
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or xval > dir_threshold
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or xval < -dir_threshold
+        end
+    elseif inp_type == "analog" then
+        Input.prevState[ctx][inp].up = Input.state[ctx][inp].up
+        Input.prevState[ctx][inp].down = Input.state[ctx][inp].down
+        Input.prevState[ctx][inp].left = Input.state[ctx][inp].left
+        Input.prevState[ctx][inp].right = Input.state[ctx][inp].right
+        Input.prevState[ctx][inp].x = Input.state[ctx][inp].x
+        Input.prevState[ctx][inp].y = Input.state[ctx][inp].y
+
+        Input.state[ctx][inp].up = false
+        Input.state[ctx][inp].down = false
+        Input.state[ctx][inp].left = false
+        Input.state[ctx][inp].right = false
+        Input.state[ctx][inp].x = 0
+        Input.state[ctx][inp].y = 0
+        if tbl[inp].keyboard then
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.up])
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.down])
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.left])
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or Lkey.GetKeyState(Lkey[tbl[inp].keyboard.right])
+        end
+        if tbl[inp].gamepad then
+            Input.state[ctx][inp].up = Input.state[ctx][inp].up or xGetKeyStateAuto(xinp[tbl[inp].gamepad.up])
+            Input.state[ctx][inp].down = Input.state[ctx][inp].down or xGetKeyStateAuto(xinp[tbl[inp].gamepad.down])
+            Input.state[ctx][inp].left = Input.state[ctx][inp].left or xGetKeyStateAuto(xinp[tbl[inp].gamepad.left])
+            Input.state[ctx][inp].right = Input.state[ctx][inp].right or xGetKeyStateAuto(xinp[tbl[inp].gamepad.right])
+        end
+        local x, y = false, false
+        if Input.state[ctx][inp].right then
+            Input.state[ctx][inp].x = 1
+            x = true
+        end
+        if Input.state[ctx][inp].left then
+            Input.state[ctx][inp].x = Input.state[ctx][inp].x - 1
+            x = not x
+        end
+        if Input.state[ctx][inp].up then
+            Input.state[ctx][inp].y = 1
+            y = true
+        end
+        if Input.state[ctx][inp].down then
+            Input.state[ctx][inp].y = Input.state[ctx][inp].y - 1
+            y = not y
+        end
+        if x and y then
+            Input.state[ctx][inp].x = Input.state[ctx][inp].x * 0.707
+            Input.state[ctx][inp].y = Input.state[ctx][inp].y * 0.707
+        end
+        if tbl[inp].joystick == "left" then
+            local xval
+            local yval
+            if c_idx then
+                xval = xinp.getLeftThumbX(c_idx)
+                yval = xinp.getLeftThumbY(c_idx)
+            else
+                xval = xinp.getLeftThumbX()
+                yval = xinp.getLeftThumbY()
+            end
+            local magnitude = math.sqrt(xval ^ 2 + yval ^ 2)
+            if magnitude > Config.deadzone then
+                if magnitude > 1 then
+                    xval = xval / magnitude
+                    yval = yval / magnitude
+                    magnitude = 1
+                end
+                magnitude = magnitude - Config.deadzone
+                local n_magnitude = magnitude / (1 - Config.deadzone)
+                Input.state[ctx][inp].x = xval * n_magnitude
+                Input.state[ctx][inp].y = yval * n_magnitude
+            end
+        end
+        if tbl[inp].joystick == "right" then
+            local xval
+            local yval
+            if c_idx then
+                xval = xinp.getRightThumbX(c_idx)
+                yval = xinp.getRightThumbY(c_idx)
+            else
+                xval = xinp.getRightThumbX()
+                yval = xinp.getRightThumbY()
+            end
+            local magnitude = math.sqrt(xval ^ 2 + yval ^ 2)
+            if magnitude > Config.deadzone then
+                if magnitude > 1 then
+                    xval = xval / magnitude
+                    yval = yval / magnitude
+                    magnitude = 1
+                end
+                magnitude = magnitude - Config.deadzone
+                local n_magnitude = magnitude / (1 - Config.deadzone)
+                Input.state[ctx][inp].x = xval * n_magnitude
+                Input.state[ctx][inp].y = yval * n_magnitude
+            end
+        end
+    end
+end
+
+--- Updates the state of the given context.
+---@param ctx string
+function Input.UpdateContext(ctx)
+    if not Input.schema[ctx] then
+        error("The specified context was not found")
+    end
+    if Input.schema[ctx].__multi and Input.schema[ctx].__multi > 1 then
+        for i, tbl in ipairs(Config.controls[ctx]) do
+            for inp, inp_type in pairs(Input.schema[ctx]) do
+                if inp ~= "__multi" then
+                    update_single_input(ctx, inp, inp_type, tbl, i)
+                end
+            end
+        end
+    else
+        local tbl = Config.controls[ctx]
+        for inp, inp_type in pairs(Input.schema[ctx]) do
+            update_single_input(ctx, inp, inp_type, tbl)
+        end
+    end
+end
+
+--- Checks if the given input has just been pressed.
+---@param ctx string The context that the input belongs to.
+---@param inp string The input to check.
+---@param dir string|nil If the input is directional, the direction of the input.
+function Input.IsPressed(ctx, inp, dir)
+    if not Input.schema[ctx] then
+        error("The specified context was not found")
+    end
+    if Input.schema[ctx][inp] == "button" then
+        return Input.state[ctx][inp] and not Input.prevState[ctx][inp]
+    elseif Input.schema[ctx][inp] == "directional" then
+        return Input.state[ctx][inp][dir] and not Input.prevState[ctx][inp][dir]
+    end
+    error("Unsupported input type")
+end
+
+--- Checks if the given input has just been released.
+---@param ctx string The context that the input belongs to.
+---@param inp string The input to check.
+---@param dir string|nil If the input is directional, the direction of the input.
+function Input.IsReleased(ctx, inp, dir)
+    if not Input.schema[ctx] then
+        error("The specified context was not found")
+    end
+    if Input.schema[ctx][inp] == "button" then
+        return Input.prevState[ctx][inp] and not Input.state[ctx][inp]
+    elseif Input.schema[ctx][inp] == "directional" then
+        return Input.prevState[ctx][inp][dir] and not Input.state[ctx][inp][dir]
+    end
+    error("Unsupported input type")
+end
+
+return Input

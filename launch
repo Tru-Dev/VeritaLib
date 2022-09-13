@@ -2,8 +2,6 @@
 -- VeritaLib builder launch file --
 -----------------------------------
 
--- error("test")
-
 local run_main = true
 local compile_vlib = false
 local run_tests = false

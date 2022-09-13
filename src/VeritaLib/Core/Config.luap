@@ -9,9 +9,115 @@
 #           macro_unpack_keys(v)
 #           indent = indent - 4
 #           _put((" "):rep(indent) .. "},\n")
+#       elseif type(v) == "number" then
+#           _put(("%s,\n"):format(tostring(v)))
 #       else
 #           _put(("%q,\n"):format(v))
 #       end
+#   end
+#end
+#
+#local function macro_unpack_keyconf()
+#   local indent = 12
+#   local ret = ""
+#   for ctx, ctx_dat in pairs(config.input_commands) do
+#       _put((" "):rep(indent) .. ctx .. " = {\n")
+#       indent = indent + 4
+#       if ctx_dat.__multi and ctx_dat.__multi > 1 then
+#           for _ = 1, ctx_dat.__multi do
+#               _put((" "):rep(indent) .. "{\n")
+#               indent = indent + 4
+#               for inp, inp_dat in pairs(ctx_dat) do if inp ~= "__multi" then
+#                   if inp_dat.type == "directional" or inp_dat.type == "analog" then
+#                       _put((" "):rep(indent) .. inp .. " = {\n")
+#                       indent = indent + 4
+#                       if inp_dat.keyboard then
+#                           _put((" "):rep(indent) .. "keyboard = {\n")
+#                           indent = indent + 4
+#                           _put((" "):rep(indent) .. ("up = %q,\n"):format(inp_dat.keyboard.up))
+#                           _put((" "):rep(indent) .. ("down = %q,\n"):format(inp_dat.keyboard.down))
+#                           _put((" "):rep(indent) .. ("left = %q,\n"):format(inp_dat.keyboard.left))
+#                           _put((" "):rep(indent) .. ("right = %q,\n"):format(inp_dat.keyboard.right))
+#                           indent = indent - 4
+#                           _put((" "):rep(indent) .. "},\n")
+#                       end
+#                       if inp_dat.gamepad then
+#                           _put((" "):rep(indent) .. "gamepad = {\n")
+#                           indent = indent + 4
+#                           _put((" "):rep(indent) .. ("up = %q,\n"):format(inp_dat.gamepad.up))
+#                           _put((" "):rep(indent) .. ("down = %q,\n"):format(inp_dat.gamepad.down))
+#                           _put((" "):rep(indent) .. ("left = %q,\n"):format(inp_dat.gamepad.left))
+#                           _put((" "):rep(indent) .. ("right = %q,\n"):format(inp_dat.gamepad.right))
+#                           indent = indent - 4
+#                           _put((" "):rep(indent) .. "},\n")
+#                       end
+#                       if inp_dat.joystick then
+#                       _put((" "):rep(indent) .. ("joystick = %q\n"):format(inp_dat.joystick))
+#                       end
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   elseif inp_dat.type == "button" then
+#                       _put((" "):rep(indent) .. inp .. " = {\n")
+#                       indent = indent + 4
+#                       if inp_dat.keyboard then
+#                           _put((" "):rep(indent) .. ("keyboard = %q,\n"):format(inp_dat.keyboard))
+#                       end
+#                       if inp_dat.gamepad then
+#                           _put((" "):rep(indent) .. ("gamepad = %q,\n"):format(inp_dat.gamepad))
+#                       end
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   end
+#               end end
+#               indent = indent - 4
+#               _put((" "):rep(indent) .. "},\n")
+#           end
+#           else
+#           for inp, inp_dat in pairs(ctx_dat) do if inp ~= "__multi" then
+#               if inp_dat.type == "directional" or inp_dat.type == "analog" then
+#                   _put((" "):rep(indent) .. inp .. " = {\n")
+#                   indent = indent + 4
+#                   if inp_dat.keyboard then
+#                       _put((" "):rep(indent) .. "keyboard = {\n")
+#                       indent = indent + 4
+#                       _put((" "):rep(indent) .. ("up = %q,\n"):format(inp_dat.keyboard.up))
+#                       _put((" "):rep(indent) .. ("down = %q,\n"):format(inp_dat.keyboard.down))
+#                       _put((" "):rep(indent) .. ("left = %q,\n"):format(inp_dat.keyboard.left))
+#                       _put((" "):rep(indent) .. ("right = %q,\n"):format(inp_dat.keyboard.right))
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   end
+#                   if inp_dat.gamepad then
+#                       _put((" "):rep(indent) .. "gamepad = {\n")
+#                       indent = indent + 4
+#                       _put((" "):rep(indent) .. ("up = %q,\n"):format(inp_dat.gamepad.up))
+#                       _put((" "):rep(indent) .. ("down = %q,\n"):format(inp_dat.gamepad.down))
+#                       _put((" "):rep(indent) .. ("left = %q,\n"):format(inp_dat.gamepad.left))
+#                       _put((" "):rep(indent) .. ("right = %q,\n"):format(inp_dat.gamepad.right))
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   end
+#                   if inp_dat.joystick then
+#                       _put((" "):rep(indent) .. ("joystick = %q\n"):format(inp_dat.joystick))
+#                   end
+#                   indent = indent - 4
+#                   _put((" "):rep(indent) .. "},\n")
+#               elseif inp_dat.type == "button" then
+#                   _put((" "):rep(indent) .. inp .. " = {\n")
+#                   indent = indent + 4
+#                   if inp_dat.keyboard then
+#                       _put((" "):rep(indent) .. ("keyboard = %q,\n"):format(inp_dat.keyboard))
+#                   end
+#                   if inp_dat.gamepad then
+#                       _put((" "):rep(indent) .. ("gamepad = %q,\n"):format(inp_dat.gamepad))
+#                   end
+#                   indent = indent - 4
+#                   _put((" "):rep(indent) .. "},\n")
+#               end
+#           end end
+#       end
+#       indent = indent - 4
+#       _put((" "):rep(indent) .. "},\n")
 #   end
 #end
 
@@ -58,22 +164,10 @@ do
     end
 
     config_table = merge(config_table, {
-        dgpu_trick = false,
-        gpu = "",
-        fullscreen_resolution = {
-            width = 1920,
-            height = 1080,
-        },
-        window_size = {
-            width = 1600,
-            height = 900,
-        },
-        refresh_rate_numerator = 0,
-        refresh_rate_denominator = 0,
-        windowed = true,
-        vsync = false,
-        window_scaling = "aspect",
 #macro_unpack_keys(config.default_config)
+        controls = {
+#macro_unpack_keyconf()
+        },
     })
 end
 
