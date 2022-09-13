@@ -166,6 +166,9 @@ clsmeta = {
         ---@type lstg.GameObject|vlib.Core.GameObject
         local obj = lstg.New(self)
         setmetatable(obj, objmeta)
+        if self.newinst then
+            self:newinst(obj)
+        end
         obj:init(...)
         return obj
     end

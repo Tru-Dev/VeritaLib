@@ -110,6 +110,9 @@ clsmeta = {
         ---@type vlib.Core.LogicObject
         local obj = { class = self }
         setmetatable(obj, objmeta)
+        if self.newinst then
+            self:newinst()
+        end
         obj:init(...)
         return obj
     end,

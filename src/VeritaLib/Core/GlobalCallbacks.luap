@@ -1,6 +1,11 @@
 
-local Window = require(".Window")
+-- Imports
+
+local GameClass = require(".GameClass")
+local LogicClass = require(".LogicClass")
 local Input = require(".Input")
+local Scene = require(".Scene")
+local Window = require(".Window")
 local Graphics = require("<Graphics")
 local imgui = require("imgui")
 local xinput = require("xinput")
@@ -12,10 +17,15 @@ local xinput = require("xinput")
 local GlobalCallbacks = {
     --- Called in `GameInit`.
     Init = function()
+        --- Anonymous Scene
+        LogicClass {
+            { Scene }
+        } ()
+
         lstg.LoadTTF("Arial", "C:/Windows/Fonts/arial.ttf", 64, 64)
-        local Class = require(".GameClass")
+
         -- Anonymous class
-        Class {
+        GameClass {
             {
                 default_function = 0x08
             };
@@ -75,34 +85,7 @@ local GlobalCallbacks = {
 }
 
 if not CALLBACKS_INITIALIZED then
-    local global_ctx
-
-    -- Callbacks that don't change with debug status
-
     function GameInit()
-        Graphics.Images.Init()
-        global_ctx = Graphics.Context("Global Rendering Context", {
-            view_mode = "2d",
-            view_data = {
-                0, $(config.target_res.width),
-                0, $(config.target_res.height)
-            },
-            viewport = {
-                0, $(config.target_res.width),
-                0, $(config.target_res.height)
-            },
-            scissor_rect = {
-                0, $(config.target_res.width),
-                0, $(config.target_res.height)
-            },
-            clear_type = "full",
-            clear_color = lstg.Color(0xFF222222),
-            image_scale = 1,
-            fog = {},
-
-            capture = true,
-            create_image = true
-        })
         GlobalCallbacks.Init()
     end
 
@@ -139,9 +122,9 @@ if not CALLBACKS_INITIALIZED then
     function RenderFunc()
         lstg.BeginScene()
         Graphics.Images.Update()
-        global_ctx.begin()
+        Graphics.global_ctx.begin()
         GlobalCallbacks.Render()
-        global_ctx.apply()
+        Graphics.global_ctx.apply()
         lstg.RenderClear(lstg.Color(0xFF000000))
         lstg.SetFog()
         lstg.SetScissorRect(0, Window.width, 0, Window.height)
