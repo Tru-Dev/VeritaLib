@@ -6,6 +6,7 @@
 local vlib = {
     Core = require(".Core"),
     Graphics = require(".Graphics"),
+    Debug = require(".Debug"),
     -- Menu = require(".Menu"),
 }
 

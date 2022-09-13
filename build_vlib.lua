@@ -2,8 +2,6 @@
 -- From http://lua-users.org/wiki/SlightlyLessSimpleLuaPreprocessor (Enhanced Version)
 -- Modified to accept the config table by default, and to optionally remove comments or minify.
 
-local config = require("vlib_conf")
-
 --- Export preprocess and preprocessAll
 local M = {}
 
@@ -283,7 +281,11 @@ local function removeWhitespace(chunk)
     return chunk:gsub("%s+", " ")
 end
 
-function M.preprocessAll(in_path, out_path)
+function M.preprocessAll(in_path, out_path, config_path)
+    if not config_path then
+        config_path = "vlib_conf.lua"
+    end
+    config = dofile(config_path)
     lfs = require("lfs")
     local paths = preparePaths(in_path, out_path)
     local errors = ""

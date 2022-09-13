@@ -5,14 +5,19 @@
 local run_main = true
 local compile_vlib = false
 local run_tests = false
+local out_folder = "build/src"
+local config_file = "vlib_conf.lua"
 
-for _, arg in ipairs(lstg.args) do
+for i, arg in ipairs(lstg.args) do
     if arg == "--compile-vlib" then
         compile_vlib = true
     end
     if arg == "--run-tests" then
+        compile_vlib = true
         run_tests = true
         run_main = false
+        out_folder = "tests/src"
+        config_file = "tests/vlib_conf.lua"
     end
     if arg == "--no-run" then
         run_main = false
@@ -21,7 +26,7 @@ end
 
 if compile_vlib then
     local build = lstg.DoFile("build_vlib.lua")
-    build.preprocessAll("src", "build/src")
+    build.preprocessAll("src", out_folder, config_file)
 end
 if run_tests or run_main then
     local config_file = io.open("config.json", "r")
@@ -63,7 +68,7 @@ else
     end
 end
 if run_tests then
-    -- no tests yet
+    lfs.chdir("tests/")
 end
 if run_main then
     lfs.chdir("build/")

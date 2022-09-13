@@ -12,6 +12,23 @@
                 "build/**/*.lua",
             ],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lua-local",
+            "request": "launch",
+            "name": "Build and Run Tests",
+            "program": {
+                "command": "LuaSTG-Console.exe",
+                "communication": "stdio",
+            },
+            "args": [
+                "--compile-vlib",
+                "--run-tests"
+            ],
+            "scriptFiles": [
+                "test/**/*.lua",
+            ],
+            "cwd": "${workspaceFolder}"
         }
     ],
 }

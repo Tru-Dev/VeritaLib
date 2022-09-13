@@ -53,7 +53,6 @@ local GlobalCallbacks = {
         lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
         Input.UpdateContext("menu")
         lstg.ObjFrame()
-        lstg.BoundCheck()
         lstg.UpdateXY()
         lstg.AfterFrame()
         local Keyboard = lstg.Input.Keyboard

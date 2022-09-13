@@ -14,3 +14,4 @@ imgui.ini
 # Build files
 
 build/
+tests/src/
