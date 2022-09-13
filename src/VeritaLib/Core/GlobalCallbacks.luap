@@ -1,70 +1,33 @@
 
 -- Imports
 
-local GameClass = require(".GameClass")
-local LogicClass = require(".LogicClass")
-local Input = require(".Input")
 local Scene = require(".Scene")
 local Window = require(".Window")
 local Graphics = require("<Graphics")
 local imgui = require("imgui")
 local xinput = require("xinput")
 
+GAME_EXIT = false
+
 --- Stores the functions that the LuaSTG engine callbacks call.  
 --- Minimal default behavior is provided.  
 --- An extension library may override these.
----@class vlib.Core.GlobalCallbacks
 local GlobalCallbacks = {
     --- Called in `GameInit`.
     Init = function()
-        --- Anonymous Scene
-        LogicClass {
-            { Scene }
-        } ()
-
-        lstg.LoadTTF("Arial", "C:/Windows/Fonts/arial.ttf", 64, 64)
-
-        -- Anonymous class
-        GameClass {
-            {
-                default_function = 0x08
-            };
-            render = function(self)
-                lstg.RenderTTF(
-                    "Arial", lstg.GetVersionName() .. " with VeritaLib",
-                    $(config.target_res.width) / 2, $(config.target_res.width) / 2,
-                    $(config.target_res.height) * 0.7, $(config.target_res.height) * 0.8,
-                    0x05,
-                    lstg.HSVColor(100, math.fmod(self.timer / 3, 100), 100, 100),
-                    2.5
-                )
-                lstg.RenderTTF(
-                    "Arial", "Nothing loaded!\nPress ESC to exit...",
-                    $(config.target_res.width) / 2, $(config.target_res.width) / 2,
-                    $(config.target_res.height) * 0.5, $(config.target_res.height) * 0.6,
-                    0x05, lstg.Color(0xFFFFFFFF), 2
-                )
-            end
-        } () -- instantiate this class as an object
+        Scene.Init()
+        xinput.refresh()
     end,
     --- Called in `FrameFunc`.
     ---@return boolean @Whether to exit the game or not.
     Frame = function()
-        lstg.SetTitle(("%s with VeritaLib | FPS: %.1f"):format(lstg.GetVersionName(), lstg.GetFPS()))
-        Input.UpdateContext("menu")
-        lstg.ObjFrame()
-        lstg.UpdateXY()
-        lstg.AfterFrame()
-        local Keyboard = lstg.Input.Keyboard
-        if Keyboard.GetKeyState(Keyboard.Control) and Keyboard.GetKeyState(Keyboard.Enter) then
-            Window.ToggleFullscreen()
-        end
-        return Keyboard.GetKeyState(Keyboard.Escape)
+        Scene.current:frame()
+        return GAME_EXIT
     end,
     --- Called in `RenderFunc`, between `lstg.BeginScene` and `lstg.EndScene`.  
     --- This means that you don't need to call those functions in this one.
     Render = function()
-        lstg.ObjRender()
+        Scene.current:render()
     end,
     --- Called in `GameExit`.
     Exit = function()
@@ -86,6 +49,7 @@ local GlobalCallbacks = {
 if not CALLBACKS_INITIALIZED then
     function GameInit()
         GlobalCallbacks.Init()
+        GAME_INIT = true
     end
 
     function GameExit()
@@ -110,12 +74,19 @@ if not CALLBACKS_INITIALIZED then
 #end
 
     function FrameFunc()
-        xinput.refresh()
         xinput.update()
+#if config.debug.enable or config.enable_imgui then
+        imgui.backend.NewFrame()
+        imgui.ImGui.NewFrame()
+#end
 #if config.debug.enable then
         Debug.Update()
 #end
-        return GlobalCallbacks.Frame()
+        local exit = GlobalCallbacks.Frame()
+#if config.debug.enable or config.enable_imgui then
+        imgui.ImGui.EndFrame()
+#end
+        return exit
     end
 
     function RenderFunc()
@@ -131,8 +102,10 @@ if not CALLBACKS_INITIALIZED then
         lstg.SetViewport(unpack(Window.main_viewport))
         lstg.SetOrtho(0, 1, 0, 1)
         lstg.RenderRect("Global Rendering Context", 0, 1, 0, 1)
+#if config.debug.enable or config.enable_imgui then
         imgui.ImGui.Render()
         imgui.backend.RenderDrawData()
+#end
         lstg.EndScene()
     end
 

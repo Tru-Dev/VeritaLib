@@ -1,5 +1,5 @@
 
----@class vlib.Core Core libraries for VeritaLib functionality.
+--- Core libraries for VeritaLib functionality.
 local Core = {
     GameClass = require(".GameClass"),
     LogicClass = require(".LogicClass"),

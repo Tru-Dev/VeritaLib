@@ -58,30 +58,28 @@ local vlib_conf = {
     --- A list of commands used by your game mapped to their default inputs.  
     --- Split into several contexts, which can be checked independently from each other.
     input_commands = {
-        -- Example configuration
+        test = {
+            exit = {
+                type = "button",
+                keyboard = "Escape"
+            },
+        },
 
-        -- Example menu context
         menu = {
             dir = {
-                -- In this case, creates boolean inputs dir.up, dir.down, dir.left, and dir.right
                 type = "directional",
                 keyboard = {
-                    -- See lstg.Input.Keyboard module
-
                     up = "Up",
                     down = "Down",
                     left = "Left",
                     right = "Right",
                 },
                 gamepad = {
-                    -- See xinput module
-
                     up = "Up",
                     down = "Down",
                     left = "Left",
                     right = "Right",
                 },
-                -- Does not create analog input for joysticks, joysticks are mapped to boolean inputs.
                 joystick = "both",
             },
             accept = {
@@ -96,24 +94,15 @@ local vlib_conf = {
             },
         },
 
-        -- Example game context
         game = {
             dir = {
-                -- In this case, creates analog inputs dir.x and dir.y, and creates boolean inputs
-                -- dir.up, dir.down, dir.left, and dir.right.  
-                -- Boolean inputs are checked for keyboard only.
                 type = "analog",
                 keyboard = {
-                    -- See lstg.Input.Keyboard
-
                     up = "Up",
                     down = "Down",
                     left = "Left",
                     right = "Right",
                 },
-                -- Set gamepad to nil as dpad will not be used.
-
-                -- Creates analog input for joysticks, digital buttons are mapped to analog inputs.
                 joystick = "left",
             },
             shot = {

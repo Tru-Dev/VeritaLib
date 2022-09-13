@@ -16,8 +16,8 @@ for i, arg in ipairs(lstg.args) do
         compile_vlib = true
         run_tests = true
         run_main = false
-        out_folder = "tests/src"
-        config_file = "tests/vlib_conf.lua"
+        out_folder = "test/src"
+        config_file = "test/vlib_conf.lua"
     end
     if arg == "--no-run" then
         run_main = false
@@ -68,7 +68,7 @@ else
     end
 end
 if run_tests then
-    lfs.chdir("tests/")
+    lfs.chdir("test/")
 end
 if run_main then
     lfs.chdir("build/")

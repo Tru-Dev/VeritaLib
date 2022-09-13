@@ -5,7 +5,6 @@
 --- - render_clear - same as "white", used for clearing portions of the screen
 --- - black - 16x16 black square
 --- - void - 16x16 transparent square
----@class Images
 local Images = {}
 
 Images.loaded = false
@@ -18,6 +17,7 @@ function Images.Init()
     lstg.LoadImage("render_clear", "internal:white", 0, 0, 16, 16)
     lstg.LoadImage("black", "internal:black", 0, 0, 16, 16)
     lstg.LoadImage("void", "internal:void", 0, 0, 16, 16)
+    Images.loaded = false
 end
 
 function Images.Update()

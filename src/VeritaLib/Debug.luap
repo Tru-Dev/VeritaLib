@@ -1,13 +1,12 @@
 
 --- Miscellaneous debug functionality for VeritaLib.  
 --- If you build VeritaLib with debug disabled, you may safely remove this file.
----@class vlib.Debug
 local Debug = {}
 
 #if config.debug.enable then
 
-local imgui = require("imgui")
 local Input = require(".Core.Input")
+local imgui = require("imgui")
 
 local function ShowTestInputMapWindow()
     if imgui.ImGui.Begin("VeritaLib Inputs") then
@@ -32,21 +31,16 @@ end
 Debug.show_ui = false
 
 function Debug.Update()
-    imgui.backend.NewFrame()
-    imgui.ImGui.NewFrame()
     Debug.Input.Update()
     if Debug.Input.IsPressed("show_ui") then
         Debug.show_ui = not Debug.show_ui
-        print("show_ui press")
     end
     if Debug.show_ui then
         imgui.backend.ShowFrameStatistics()
         imgui.backend.ShowResourceManagerDebugWindow()
         imgui.backend.ShowTestInputWindow()
-        imgui.ImGui.ShowDemoWindow()
         ShowTestInputMapWindow()
     end
-    imgui.ImGui.EndFrame()
 end
 
 Debug.Input = {

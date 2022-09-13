@@ -42,6 +42,20 @@ local vlib_conf = {
         dir_threshold = 0.35,
     },
 
+    --- Whether to enable Dear ImGui in the result.  
+    --- Implied by `debug.enable`.
+    enable_imgui = true,
+
+    --------- Resources ---------
+
+    --- Size of one texture page.
+    texpage_size = {
+        width = 4096,
+        height = 4096,
+    },
+
+    --- Default resource folder path
+    respath = "res",
 
     --------- Input ---------
 

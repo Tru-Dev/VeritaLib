@@ -1,5 +1,5 @@
 
----@class vlib.Core.Input Input module.
+--- Input module.
 local Input = {
     schema = {
 #for ctx, ctx_dat in pairs(config.input_commands) do

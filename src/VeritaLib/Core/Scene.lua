@@ -1,33 +1,48 @@
 
---- A wrapper for global state, such as the main menu, gameplay, staff roll, etc.
----@class vlib.Core.Scene: vlib.Core.LogicObject
-
-local Class = require(".LogicClass")
+local Stage = require(".Stage")
 local Graphics = require("<Graphics")
 
----@class vlib.Core.Scene.Class: vlib.Core.LogicClass
---
---- The current scene.
----@field current vlib.Core.Scene
----@operator call(...): vlib.Core.Scene
-local Scene = Class {
-    {
-        newinst = function(self, obj)
-            lstg.ResetPool()
-            lstg.RemoveResource("stage")
-            lstg.RemoveResource("global")
-            Graphics.Init()
-            self.current = obj
-        end,
-    };
-    init = function(self)
-    end,
-    frame = function(self)
-    end,
-    render = function(self)
-    end,
-    del = function(self)
-    end,
-}
+--- A wrapper for global state, such as the main menu, gameplay, staff roll, etc.
+local Scene = {}
+
+function Scene.New(scenedef)
+    local function noop() end
+
+    scenedef = scenedef or {}
+    local scene = {
+        init = scenedef.init or noop,
+        frame = scenedef.frame or noop,
+        render = scenedef.render or noop,
+        del = scenedef.del or noop,
+    }
+    return scene
+end
+
+function Scene.Set(scene)
+    if Scene.current then
+        Scene.current:del()
+        lstg.ResetPool()
+        lstg.RemoveResource("stage")
+        lstg.RemoveResource("global")
+    end
+    if Stage.current then
+        Stage.current:del()
+        Stage.current = nil
+    end
+    lstg.SetResourceStatus("global")
+    if GAME_INIT then
+        Graphics.Init()
+        scene:init()
+    end
+    Scene.current = scene
+end
+
+function Scene.Init()
+    if not Scene.current then
+        error("You must set a scene before game init")
+    end
+    Graphics.Init()
+    Scene.current:init()
+end
 
 return Scene

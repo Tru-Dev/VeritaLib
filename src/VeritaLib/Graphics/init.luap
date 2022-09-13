@@ -1,0 +1,36 @@
+
+
+--- Graphics module.
+local Graphics = {
+    Context = require(".Context"),
+    Images = require(".Images"),
+}
+
+--- Initializes the componenets of this module.
+function Graphics.Init()
+    Graphics.Images.Init()
+    Graphics.global_ctx = Graphics.Context("Global Rendering Context", {
+        view_mode = "2d",
+        view_data = {
+            0, $(config.target_res.width),
+            0, $(config.target_res.height)
+        },
+        viewport = {
+            0, $(config.target_res.width),
+            0, $(config.target_res.height)
+        },
+        scissor_rect = {
+            0, $(config.target_res.width),
+            0, $(config.target_res.height)
+        },
+        clear_type = "full",
+        clear_color = lstg.Color(0xFF000000),
+        image_scale = 1,
+        fog = {},
+
+        capture = true,
+        create_image = true
+    })
+end
+
+return Graphics

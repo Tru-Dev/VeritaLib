@@ -2,12 +2,13 @@
 --- *Unlocking the power of LuaSTG.*
 --
 --- VeritaLib is a framework meant for use in LuaSTG Sub.
----@class vlib
 local vlib = {
     Core = require(".Core"),
     Graphics = require(".Graphics"),
-    Debug = require(".Debug"),
+    Resources = require(".Resources"),
     -- Menu = require(".Menu"),
 }
+
+vlib.target_res = { width = $(config.target_res.width), height = $(config.target_res.height) }
 
 return vlib

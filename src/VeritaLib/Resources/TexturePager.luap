@@ -1,0 +1,13 @@
+
+--- Manages efficient handling of texture resources.
+local TexturePager = {}
+
+function TexturePager.Init()
+    
+end
+
+function TexturePager.Load()
+    
+end
+
+return TexturePager
