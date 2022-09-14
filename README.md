@@ -52,6 +52,8 @@ local vlib = require("VeritaLib")
 VeritaLib uses a scenes system to manage global resources and state.  
 Here's a basic scene:
 ```lua
+local Scene = vlib.Core.Scene
+
 local scene_hello = Scene.New {
     init = function(self)
         lstg.LoadTTF("Arial", "C:/Windows/Fonts/arial.ttf", 64, 64)
