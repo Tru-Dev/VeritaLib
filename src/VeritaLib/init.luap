@@ -9,6 +9,7 @@ local vlib = {
     -- Menu = require(".Menu"),
 }
 
-vlib.target_res = { width = $(config.target_res.width), height = $(config.target_res.height) }
+--- Runtime alias for target resolution
+vlib.screen = { width = $(config.target_res.width), height = $(config.target_res.height) }
 
 return vlib

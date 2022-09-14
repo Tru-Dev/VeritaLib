@@ -15,8 +15,8 @@ stage1 = Stage.New {
     render = function(self)
         lstg.RenderTTF(
             "Arial", "Stage 1 / 3\nPress Z to move to the next...",
-            vlib.target_res.width / 2, vlib.target_res.width / 2,
-            vlib.target_res.height / 2, vlib.target_res.height / 2,
+            vlib.screen.width / 2, vlib.screen.width / 2,
+            vlib.screen.height / 2, vlib.screen.height / 2,
             5, lstg.Color(0xFFFFFFFF), 2
         )
     end
@@ -31,8 +31,8 @@ stage2 = Stage.New {
     render = function(self)
         lstg.RenderTTF(
             "Arial", "Stage 2 / 3\nPress Z to move to the next...",
-            vlib.target_res.width / 2, vlib.target_res.width / 2,
-            vlib.target_res.height / 2, vlib.target_res.height / 2,
+            vlib.screen.width / 2, vlib.screen.width / 2,
+            vlib.screen.height / 2, vlib.screen.height / 2,
             5, lstg.Color(0xFFFFFFFF), 2
         )
     end
@@ -47,8 +47,8 @@ stage3 = Stage.New {
     render = function(self)
         lstg.RenderTTF(
             "Arial", "Stage 3 / 3\nPress Z to move to the next...",
-            vlib.target_res.width / 2, vlib.target_res.width / 2,
-            vlib.target_res.height / 2, vlib.target_res.height / 2,
+            vlib.screen.width / 2, vlib.screen.width / 2,
+            vlib.screen.height / 2, vlib.screen.height / 2,
             5, lstg.Color(0xFFFFFFFF), 2
         )
     end

@@ -1,7 +1,0 @@
-
-#-- Must be a .luap file, or it'll try to run after preprocessing
-
-
-lstg.DoFile("src/loader.lua")
-
-require("VeritaLib")

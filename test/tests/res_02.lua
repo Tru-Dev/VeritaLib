@@ -23,8 +23,8 @@ return Scene.New {
         lstg.RenderClear(lstg.Color(0xFF222222))
         lstg.RenderTTF(
             "Arial", "Async Resource Loading\nCurrent Segment Value: " .. self.segment_val,
-            vlib.target_res.width / 2, vlib.target_res.width / 2,
-            vlib.target_res.height / 2, vlib.target_res.height / 2,
+            vlib.screen.width / 2, vlib.screen.width / 2,
+            vlib.screen.height / 2, vlib.screen.height / 2,
             5, lstg.Color(0xFFFFFFFF), 2
         )
     end

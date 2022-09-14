@@ -51,9 +51,6 @@ local vlib_conf = {
     --- Size of one texture page.
     texpage_size = 4096,
 
-    --- Default resource folder path
-    respath = "res",
-
     --------- Input ---------
 
     --- A list of commands used by your game mapped to their default inputs.  
