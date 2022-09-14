@@ -49,10 +49,7 @@ local vlib_conf = {
     --------- Resources ---------
 
     --- Size of one texture page.
-    texpage_size = {
-        width = 4096,
-        height = 4096,
-    },
+    texpage_size = 4096,
 
     --- Default resource folder path
     respath = "res",

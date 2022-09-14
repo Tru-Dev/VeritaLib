@@ -1,0 +1,75 @@
+{
+    "tex": {
+        "block1-256": {
+            "file": "test_res/block1-256.png"
+        },
+        "block1-512": {
+            "file": "test_res/block1-512.png"
+        },
+        "block2-256": {
+            "file": "test_res/block2-256.png"
+        },
+        "block2-512": {
+            "file": "test_res/block2-512.png"
+        },
+        "blocks-1024": {
+            "file": "test_res/blocks-1024.png"
+        },
+        "blocks-2048": {
+            "file": "test_res/blocks-2048.png",
+            "nopage": true
+        }
+    },
+    "img": {
+        "block1-256": {
+            "tex": "block1-256"
+        },
+        "block1-512": {
+            "tex": "block1-512"
+        },
+        "block2-256": {
+            "tex": "block2-256"
+        },
+        "block2-512-1": {
+            "tex": "block2-512",
+            "region": {
+                "x": 0,
+                "y": 0,
+                "w": 256,
+                "h": 512
+            }
+        },
+        "block2-512-2": {
+            "tex": "block2-512",
+            "region": {
+                "x": 256,
+                "y": 0,
+                "w": 256,
+                "h": 512
+            }
+        }
+    },
+    "img_group": {
+        "blocks-1024": {
+            "tex": "blocks-1024",
+            "rows": 2,
+            "columns": 2
+        },
+        "blocks-2048": {
+            "tex": "blocks-2048",
+            "rows": 2,
+            "columns": 2
+        },
+        "blocks-inner-corners": {
+            "tex": "blocks-2048",
+            "rows": 2,
+            "columns": 2,
+            "region": {
+                "x": 512,
+                "y": 512,
+                "w": 1024,
+                "h": 1024
+            }
+        }
+    }
+}

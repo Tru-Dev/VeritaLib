@@ -1,13 +1,189 @@
 
+local Class = require("<Core.LogicClass")
+
 --- Manages efficient handling of texture resources.
-local TexturePager = {}
+---@class vlib.Resources.TexturePager
+--
+--- Adds a texture to the page.
+---@field add_tex fun(self: vlib.Resources.TexturePager, tex: string)
+--
+--- Adds an image referring to the page.
+---@field add_img fun(self: vlib.Resources.TexturePager, img: string, tex: string, region: table|nil)
+--
+--- Adds an image group referring to the page.
+---@field add_img_group fun(self: vlib.Resources.TexturePager, img:string, tex: string, rows: integer, columns: integer)
+--
+--- Adds an image group referring to the page.
+---@field add_anim fun(self: vlib.Resources.TexturePager, anim:string, tex: string, rows: integer, columns: integer, aniv:integer, region:table)
+--
+--- Prepares the pages' render targets.
+---@field prepare_pages fun(self: vlib.Resources.TexturePager)
+--
+--- Prepares the image references.
+---@field prepare_images fun(self: vlib.Resources.TexturePager)
+--
+--- Renders the textures to the pages then unloads the original textures.
+--- Must be called in a render callback.
+---@field make_pages fun(self: vlib.Resources.TexturePager)
 
-function TexturePager.Init()
-    
-end
+---@class vlib.Resources.TexturePager.Class
+---@operator call(...): vlib.Resources.TexturePager
+local TexturePager = Class {
+    init = function(self, name)
+        self.name = name
 
-function TexturePager.Load()
-    
-end
+        self.max_rt = 0
+
+        -- Holds processed texture details
+        self.tex_list = {}
+
+        -- Holds image details
+        self.img_list = {}
+        self.anim_list = {}
+
+        -- Holds data to be processed
+        self.tex_prep_list = {}
+
+        self.done = false
+    end,
+    add_tex = function(self, tex)
+        table.insert(self.tex_prep_list, { tex, lstg.GetTextureSize(tex) })
+    end,
+    add_img = function(self, img, tex, region)
+        if not region then
+            local w, h = lstg.GetTextureSize(tex)
+            region = { x = 0, y = 0, w = w, h = h }
+        end
+        self.img_list[img] = { tex, region }
+    end,
+    add_img_group = function(self, img, tex, rows, columns, region)
+        if not region then
+            local w, h = lstg.GetTextureSize(tex)
+            region = { x = 0, y = 0, w = w, h = h }
+        end
+        -- local w, h = lstg.GetTextureSize(tex)
+        local sw, sh = region.w / columns, region.h / rows
+        local idx = 1
+        for i = 1, rows do
+            for j = 1, columns do
+                local subregion = {
+                    x = (j - 1) * sw + region.x,
+                    y = (i - 1) * sh + region.y,
+                    w = sw,
+                    h = sh
+                }
+                self.img_list[img .. "_" .. idx] = { tex, subregion }
+                idx = idx + 1
+            end
+        end
+    end,
+    add_anim = function(self, anim, tex, rows, columns, aniv, region)
+        if not region then
+            local w, h = lstg.GetTextureSize(tex)
+            region = { x = 0, y = 0, w = w, h = h }
+        end
+        local sw, sh = region.w / columns, region.h / rows
+        self.anim_list[anim] = {
+            tex,
+            region[1], region[2], sw, sh,
+            columns, rows, aniv
+        }
+    end,
+    prepare_pages = function(self)
+        table.sort(self.tex_prep_list, function(a, b)
+            if b[3] == a[3] then
+                return b[2] < a[2]
+            end
+            return b[3] < a[3]
+        end)
+        local cx, cy = 0, 0
+        local ch = self.tex_prep_list[1][3]
+        self.max_rt = 1
+        for _, t in ipairs(self.tex_prep_list) do
+            if cx + t[2] > $(config.texpage_size) then
+                cx = 0
+                cy = ch
+                ch = ch + t[3]
+                if ch > $(config.texpage_size) then
+                    self.max_rt = self.max_rt + 1
+                    cy = 0
+                    ch = t[3]
+                end
+            end
+            print(t[1], cx, cy, t[2], t[3])
+            self.tex_list[t[1]] = { self.max_rt, cx, cy, t[2], t[3] }
+            cx = cx + t[2]
+        end
+        for i = 1, self.max_rt do
+            lstg.CreateRenderTarget(
+                ("page:%s_%02d"):format(self.name, i),
+                $(config.texpage_size),
+                $(config.texpage_size)
+            )
+        end
+    end,
+    prepare_images = function(self)
+        for img, data in pairs(self.img_list) do
+            local texinfo = self.tex_list[data[1]]
+            lstg.LoadImage(
+                img, ("page:%s_%02d"):format(self.name, texinfo[1]),
+                data[2].x + texinfo[2], data[2].y + texinfo[3],
+                data[2].w, data[2].h
+            )
+        end
+        for anim, data in pairs(self.anim_list) do
+            local texinfo = self.tex_list[data[1]]
+            lstg.LoadAnimation(
+                anim, ("page:%s_%02d"):format(self.name, texinfo[1]),
+                data[2]+ texinfo[2], data[3] + texinfo[3],
+                unpack(data, 4)
+            )
+        end
+    end,
+    make_pages = function(self)
+        if self.done then
+            return
+        end
+
+        local tex_idx = 1
+        local page_img = ("page:%s_rdr"):format(self.name)
+        for i = 1, self.max_rt do
+            lstg.PushRenderTarget(("page:%s_%02d"):format(self.name, i))
+            lstg.SetViewport(0, $(config.texpage_size), 0, $(config.texpage_size))
+            lstg.SetScissorRect(0, $(config.texpage_size), 0, $(config.texpage_size))
+            lstg.SetOrtho(0, $(config.texpage_size), 0, $(config.texpage_size))
+
+            local tex_prep_data = self.tex_prep_list[tex_idx]
+            local tex = tex_prep_data[1]
+            local tex_data = self.tex_list[tex]
+            while i == tex_data[1] do
+                lstg.LoadImage(
+                    page_img, tex,
+                    0, 0, tex_prep_data[2], tex_prep_data[3]
+                )
+                lstg.SetImageCenter(page_img, 0, 0)
+                lstg.Render(page_img, tex_data[2], $(config.texpage_size) - tex_data[3])
+
+                tex_idx = tex_idx + 1
+
+                lstg.RemoveResource(lstg.GetResourceStatus(), 2, page_img)
+                tex_prep_data = self.tex_prep_list[tex_idx]
+                if not tex_prep_data then
+                    break
+                end
+                tex = tex_prep_data[1]
+                tex_data = self.tex_list[tex]
+            end
+
+            lstg.PopRenderTarget()
+        end
+
+        for tex, _ in pairs(self.tex_list) do
+            lstg.RemoveResource(lstg.GetResourceStatus(), 1, tex)
+        end
+
+        self.done = true
+    end
+}
 
 return TexturePager

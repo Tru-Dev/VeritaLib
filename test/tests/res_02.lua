@@ -8,13 +8,21 @@ return Scene.New {
     init = function(self)
         lstg.LoadTTF("Arial", "C:/Windows/Fonts/arial.ttf", 64, 64)
         self.pager = TexturePager("res_01")
-        Loader.LoadResNow("test_res.json", self.pager)
+        self.loader = Loader.LoadResAsync("test_res.json", self.pager)
+        self.segment_val = 0
+    end,
+    frame = function(self)
+        if coroutine.status(self.loader) ~= "dead" then
+            _, self.segment_val = coroutine.resume(self.loader)
+        end
     end,
     render = function(self)
-        self.pager:make_pages()
+        if coroutine.status(self.loader) == "dead" then
+            self.pager:make_pages()
+        end
         lstg.RenderClear(lstg.Color(0xFF222222))
         lstg.RenderTTF(
-            "Arial", "Normal Resource Loading\nCheck the resource debug window",
+            "Arial", "Async Resource Loading\nCurrent Segment Value: " .. self.segment_val,
             vlib.target_res.width / 2, vlib.target_res.width / 2,
             vlib.target_res.height / 2, vlib.target_res.height / 2,
             5, lstg.Color(0xFFFFFFFF), 2
