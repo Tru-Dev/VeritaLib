@@ -81,6 +81,7 @@ local vlib_conf = {
                 },
                 -- Does not create analog input for joysticks, joysticks are mapped to boolean inputs.
                 joystick = "both",
+                repeating = true
             },
             accept = {
                 type = "button",

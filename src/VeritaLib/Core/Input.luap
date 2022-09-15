@@ -57,31 +57,32 @@ local Input = {
 #               end
 #               _put((" "):rep(indent) .. "},\n")
 #           end
-#       end
-#       for inp, inp_dat in pairs(ctx_dat) do
-#           if inp ~= "__multi" then
-#               if inp_dat.type == "button" then
-#                   _put((" "):rep(indent) .. ("%s = false,\n"):format(inp))
-#               elseif inp_dat.type == "directional" then
-#                   _put((" "):rep(indent) .. inp .. " = {\n")
-#                   indent = indent + 4
-#                   _put((" "):rep(indent) .. "up = false,\n")
-#                   _put((" "):rep(indent) .. "down = false,\n")
-#                   _put((" "):rep(indent) .. "left = false,\n")
-#                   _put((" "):rep(indent) .. "right = false,\n")
-#                   indent = indent - 4
-#                   _put((" "):rep(indent) .. "},\n")
-#               elseif inp_dat.type == "analog" then
-#                   _put((" "):rep(indent) .. inp .. " = {\n")
-#                   indent = indent + 4
-#                   _put((" "):rep(indent) .. "up = false,\n")
-#                   _put((" "):rep(indent) .. "down = false,\n")
-#                   _put((" "):rep(indent) .. "left = false,\n")
-#                   _put((" "):rep(indent) .. "right = false,\n")
-#                   _put((" "):rep(indent) .. "x = 0,\n")
-#                   _put((" "):rep(indent) .. "y = 0,\n")
-#                   indent = indent - 4
-#                   _put((" "):rep(indent) .. "},\n")
+#       else
+#           for inp, inp_dat in pairs(ctx_dat) do
+#               if inp ~= "__multi" then
+#                   if inp_dat.type == "button" then
+#                       _put((" "):rep(indent) .. ("%s = false,\n"):format(inp))
+#                   elseif inp_dat.type == "directional" then
+#                       _put((" "):rep(indent) .. inp .. " = {\n")
+#                       indent = indent + 4
+#                       _put((" "):rep(indent) .. "up = false,\n")
+#                       _put((" "):rep(indent) .. "down = false,\n")
+#                       _put((" "):rep(indent) .. "left = false,\n")
+#                       _put((" "):rep(indent) .. "right = false,\n")
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   elseif inp_dat.type == "analog" then
+#                       _put((" "):rep(indent) .. inp .. " = {\n")
+#                       indent = indent + 4
+#                       _put((" "):rep(indent) .. "up = false,\n")
+#                       _put((" "):rep(indent) .. "down = false,\n")
+#                       _put((" "):rep(indent) .. "left = false,\n")
+#                       _put((" "):rep(indent) .. "right = false,\n")
+#                       _put((" "):rep(indent) .. "x = 0,\n")
+#                       _put((" "):rep(indent) .. "y = 0,\n")
+#                       indent = indent - 4
+#                       _put((" "):rep(indent) .. "},\n")
+#                   end
 #               end
 #           end
 #       end
@@ -95,6 +96,60 @@ local Input = {
     state = {
 #mkState()
     },
+    repstate = {
+#for ctx, ctx_dat in pairs(config.input_commands) do
+#    local indent = 8
+#    _put((" "):rep(indent) .. ctx .. " = {\n")
+#    indent = indent + 4
+#    if ctx_dat.__multi and ctx_dat.__multi > 1 then
+#        for _ = 1, ctx_dat.__multi do
+#            _put((" "):rep(indent) .. "{\n")
+#            for inp, inp_dat in pairs(ctx_dat) do
+#                indent = indent + 4
+#                if inp ~= "__multi" then
+#                    if inp_dat.repeating then
+#                        if inp_dat.type == "button" then
+#                            _put((" "):rep(indent) .. ("%s = -1,\n"):format(inp))
+#                        elseif inp_dat.type == "directional" then
+#                            _put((" "):rep(indent) .. inp .. " = {\n")
+#                            indent = indent + 4
+#                            _put((" "):rep(indent) .. "up = -1,\n")
+#                            _put((" "):rep(indent) .. "down = -1,\n")
+#                            _put((" "):rep(indent) .. "left = -1,\n")
+#                            _put((" "):rep(indent) .. "right = -1,\n")
+#                            indent = indent - 4
+#                            _put((" "):rep(indent) .. "},\n")
+#                        end
+#                    end
+#                end
+#                indent = indent - 4
+#            end
+#            _put((" "):rep(indent) .. "},\n")
+#        end
+#    else
+#        for inp, inp_dat in pairs(ctx_dat) do
+#            if inp ~= "__multi" then
+#                if inp_dat.repeating then
+#                    if inp_dat.type == "button" then
+#                        _put((" "):rep(indent) .. ("%s = -1,\n"):format(inp))
+#                    elseif inp_dat.type == "directional" then
+#                        _put((" "):rep(indent) .. inp .. " = {\n")
+#                        indent = indent + 4
+#                        _put((" "):rep(indent) .. "up = -1,\n")
+#                        _put((" "):rep(indent) .. "down = -1,\n")
+#                        _put((" "):rep(indent) .. "left = -1,\n")
+#                        _put((" "):rep(indent) .. "right = -1,\n")
+#                        indent = indent - 4
+#                        _put((" "):rep(indent) .. "},\n")
+#                    end
+#                end
+#            end
+#        end
+#    end
+#    indent = indent - 4
+#    _put((" "):rep(indent) .. "},\n")
+#end
+    }
 }
 
 local Config = require(".Config")
@@ -115,6 +170,19 @@ local function update_single_input(ctx, inp, inp_type, tbl, c_idx)
         Input.state[ctx][inp] =
             (tbl[inp].keyboard and Lkey.GetKeyState(Lkey[tbl[inp].keyboard])) or
             (tbl[inp].gamepad and xGetKeyStateAuto(xinp[tbl[inp].gamepad]))
+        if Input.repstate[ctx][inp] ~= nil then
+            if Input.state[ctx][inp] and not Input.prevState[ctx][inp] then
+                Input.repstate[ctx][inp] = 20
+            end
+            if Input.state[ctx][inp] then
+                if Input.repstate[ctx][inp] == 0 then
+                    Input.repstate = 5
+                end
+                Input.repstate[ctx][inp] = Input.repstate[ctx][inp] - 1
+            else
+                Input.repstate[ctx][inp] = -1
+            end
+        end
     elseif inp_type == "directional" then
         Input.prevState[ctx][inp].up = Input.state[ctx][inp].up
         Input.prevState[ctx][inp].down = Input.state[ctx][inp].down
@@ -168,6 +236,21 @@ local function update_single_input(ctx, inp, inp_type, tbl, c_idx)
             Input.state[ctx][inp].down = Input.state[ctx][inp].down or yval < -dir_threshold
             Input.state[ctx][inp].right = Input.state[ctx][inp].right or xval > dir_threshold
             Input.state[ctx][inp].left = Input.state[ctx][inp].left or xval < -dir_threshold
+        end
+        if Input.repstate[ctx][inp] ~= nil then
+            for _, d in ipairs { "up", "down", "left", "right" } do
+                if Input.state[ctx][inp][d] and not Input.prevState[ctx][inp][d] then
+                    Input.repstate[ctx][inp][d] = 20
+                end
+                if Input.state[ctx][inp][d] then
+                    if Input.repstate[ctx][inp][d] == 0 then
+                        Input.repstate = 5
+                    end
+                    Input.repstate[ctx][inp][d] = Input.repstate[ctx][inp][d] - 1
+                else
+                    Input.repstate[ctx][inp][d] = -1
+                end
+            end
         end
     elseif inp_type == "analog" then
         Input.prevState[ctx][inp].up = Input.state[ctx][inp].up
@@ -296,8 +379,14 @@ function Input.IsPressed(ctx, inp, dir)
         error("The specified context was not found")
     end
     if Input.schema[ctx][inp] == "button" then
+        if Input.repstate[ctx][inp] ~= nil then
+            return Input.repstate[ctx][inp] == 0 or (Input.state[ctx][inp] and not Input.prevState[ctx][inp])
+        end
         return Input.state[ctx][inp] and not Input.prevState[ctx][inp]
     elseif Input.schema[ctx][inp] == "directional" then
+        if Input.repstate[ctx][inp] ~= nil then
+            return Input.repstate[ctx][inp][dir] == 0 or (Input.state[ctx][inp][dir] and not Input.prevState[ctx][inp][dir])
+        end
         return Input.state[ctx][inp][dir] and not Input.prevState[ctx][inp][dir]
     end
     error("Unsupported input type")
