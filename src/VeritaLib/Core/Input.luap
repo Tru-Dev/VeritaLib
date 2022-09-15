@@ -244,7 +244,7 @@ local function update_single_input(ctx, inp, inp_type, tbl, c_idx)
                 end
                 if Input.state[ctx][inp][d] then
                     if Input.repstate[ctx][inp][d] == 0 then
-                        Input.repstate = 5
+                        Input.repstate[ctx][inp][d] = 5
                     end
                     Input.repstate[ctx][inp][d] = Input.repstate[ctx][inp][d] - 1
                 else
