@@ -336,6 +336,7 @@ function Context(name, init)
             lstg.RenderClear(ctx.clear_color)
         elseif ctx.clear_type == "local" then
             lstg.SetOrtho(0, 1, 0, 1)
+            lstg.SetImageState("render_clear", "", ctx.clear_color)
             lstg.RenderRect("render_clear", 0, 1, 0, 1)
         end
         if ctx.image_scale then
