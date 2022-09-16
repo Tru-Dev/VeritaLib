@@ -56,7 +56,7 @@ function Loader.LoadResNow(resdef, pager)
                     end
                 end
             else
-                pager:add_img_group(k, v.tex, v.rows, v.columns)
+                pager:add_img_group(k, v.tex, v.rows, v.columns, v.region)
             end
         end
     end
@@ -189,7 +189,7 @@ function Loader.LoadResAsync(resdef, pager)
                         end
                     end
                 else
-                    pager:add_img_group(k, v.tex, v.rows, v.columns)
+                    pager:add_img_group(k, v.tex, v.rows, v.columns, v.region)
                 end
                 yield_for_frame()
             end
