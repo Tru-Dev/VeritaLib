@@ -6,6 +6,7 @@ local view_stacks = {
     viewport = {},
     scissor_rect = {},
     image_scale = {},
+    fog = {},
 }
 
 ---@alias vlib.Graphics.ViewMode
@@ -346,6 +347,7 @@ function Context(name, init)
         if ctx.fog then
             local t = getmetatable(ctx.fog).__index
             lstg.SetFog(unpack(t))
+            table.insert(view_stacks.fog, ctx.fog)
         end
         if ctx.view_mode then
             local t = getmetatable(ctx.view_data).__index
@@ -393,6 +395,12 @@ function Context(name, init)
             table.remove(view_stacks.image_scale)
             if #view_stacks.image_scale > 0 then
                 lstg.SetImageScale(view_stacks.image_scale[#view_stacks.image_scale])
+            end
+        end
+        if ctx.fog then
+            table.remove(view_stacks.fog)
+            if #view_stacks.fog > 0 then
+                lstg.SetFog(unpack(view_stacks.fog[#view_stacks.fog]))
             end
         end
         if ctx.view_mode then
