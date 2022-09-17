@@ -8,13 +8,13 @@ local Class = require("<Core.LogicClass")
 ---@field add_tex fun(self: vlib.Resources.TexturePager, tex: string)
 --
 --- Adds an image referring to the page.
----@field add_img fun(self: vlib.Resources.TexturePager, img: string, tex: string, region: table|nil)
+---@field add_img fun(self: vlib.Resources.TexturePager, img: string, tex: string, region: table|nil, a: number|nil, b: number|nil, rect: boolean|nil)
 --
 --- Adds an image group referring to the page.
----@field add_img_group fun(self: vlib.Resources.TexturePager, img:string, tex: string, rows: integer, columns: integer)
+---@field add_img_group fun(self: vlib.Resources.TexturePager, img:string, tex: string, rows: integer, columns: integer, a: number|nil, b: number|nil, rect: boolean|nil)
 --
 --- Adds an image group referring to the page.
----@field add_anim fun(self: vlib.Resources.TexturePager, anim:string, tex: string, rows: integer, columns: integer, aniv:integer, region:table)
+---@field add_anim fun(self: vlib.Resources.TexturePager, anim:string, tex: string, rows: integer, columns: integer, aniv:integer, region:table, a: number|nil, b: number|nil, rect: boolean|nil)
 --
 --- Prepares the pages' render targets.
 ---@field prepare_pages fun(self: vlib.Resources.TexturePager)
@@ -49,14 +49,14 @@ local TexturePager = Class {
     add_tex = function(self, tex)
         table.insert(self.tex_prep_list, { tex, lstg.GetTextureSize(tex) })
     end,
-    add_img = function(self, img, tex, region)
+    add_img = function(self, img, tex, region, a, b, rect)
         if not region then
             local w, h = lstg.GetTextureSize(tex)
             region = { x = 0, y = 0, w = w, h = h }
         end
-        self.img_list[img] = { tex, region }
+        self.img_list[img] = { tex, region, a, b, rect }
     end,
-    add_img_group = function(self, img, tex, rows, columns, region)
+    add_img_group = function(self, img, tex, rows, columns, region, a, b, rect)
         if not region then
             local w, h = lstg.GetTextureSize(tex)
             region = { x = 0, y = 0, w = w, h = h }
@@ -72,12 +72,12 @@ local TexturePager = Class {
                     w = sw,
                     h = sh
                 }
-                self.img_list[img .. "_" .. idx] = { tex, subregion }
+                self.img_list[img .. "_" .. idx] = { tex, subregion, a, b, rect }
                 idx = idx + 1
             end
         end
     end,
-    add_anim = function(self, anim, tex, rows, columns, aniv, region)
+    add_anim = function(self, anim, tex, rows, columns, aniv, region, a, b, rect)
         if not region then
             local w, h = lstg.GetTextureSize(tex)
             region = { x = 0, y = 0, w = w, h = h }
@@ -86,7 +86,7 @@ local TexturePager = Class {
         self.anim_list[anim] = {
             tex,
             region[1], region[2], sw, sh,
-            columns, rows, aniv
+            columns, rows, aniv, a, b, rect
         }
     end,
     prepare_pages = function(self)
@@ -128,7 +128,7 @@ local TexturePager = Class {
             lstg.LoadImage(
                 img, ("page:%s_%02d"):format(self.name, texinfo[1]),
                 data[2].x + texinfo[2], data[2].y + texinfo[3],
-                data[2].w, data[2].h
+                data[2].w, data[2].h, data[3], data[4], data[5]
             )
         end
         for anim, data in pairs(self.anim_list) do

@@ -26,9 +26,14 @@ function Loader.LoadResNow(resdef, pager)
             if to_load.tex[v.tex].nopage then
                 local w, h = lstg.GetTextureSize(v.tex)
                 local region = v.region or { x = 0, y = 0, w = w, h = h }
-                lstg.LoadImage(k, v.tex, region.x, region.y, region.w, region.h)
+                lstg.LoadImage(
+                    k, v.tex,
+                    region.x, region.y,
+                    region.w, region.h,
+                    v.a or 0, v.b or 0, v.rect or false
+                )
             else
-                pager:add_img(k, v.tex, v.region)
+                pager:add_img(k, v.tex, v.region, v.a or 0, v.b or 0, v.rect or false)
             end
         end
     end
@@ -50,13 +55,14 @@ function Loader.LoadResNow(resdef, pager)
                         lstg.LoadImage(
                             k .. "_" .. idx, v.tex,
                             subregion.x, subregion.y,
-                            subregion.w, subregion.h
+                            subregion.w, subregion.h,
+                            v.a or 0, v.b or 0, v.rect or false
                         )
                         idx = idx + 1
                     end
                 end
             else
-                pager:add_img_group(k, v.tex, v.rows, v.columns, v.region)
+                pager:add_img_group(k, v.tex, v.rows, v.columns, v.region, v.a or 0, v.b or 0, v.rect or false)
             end
         end
     end
@@ -71,10 +77,10 @@ function Loader.LoadResNow(resdef, pager)
                     region.x, region.y,
                     sw, sh,
                     v.columns, v.rows,
-                    v.aniv
+                    v.aniv, v.a or 0, v.b or 0, v.rect or false
                 )
             else
-                pager:add_anim(k, v.tex, v.rows, v.columns, v.aniv, v.region)
+                pager:add_anim(k, v.tex, v.rows, v.columns, v.aniv, v.region, v.a or 0, v.b or 0, v.rect or false)
             end
         end
     end
@@ -158,9 +164,14 @@ function Loader.LoadResAsync(resdef, pager)
                 if to_load.tex[v.tex].nopage then
                     local w, h = lstg.GetTextureSize(v.tex)
                     local region = v.region or { x = 0, y = 0, w = w, h = h }
-                    lstg.LoadImage(k, v.tex, region.x, region.y, region.w, region.h)
+                    lstg.LoadImage(
+                        k, v.tex,
+                        region.x, region.y,
+                        region.w, region.h,
+                        v.a or 0, v.b or 0, v.rect or false
+                    )
                 else
-                    pager:add_img(k, v.tex, v.region)
+                    pager:add_img(k, v.tex, v.region, v.a or 0, v.b or 0, v.rect or false)
                 end
                 yield_for_frame()
             end
@@ -183,13 +194,14 @@ function Loader.LoadResAsync(resdef, pager)
                             lstg.LoadImage(
                                 k .. "_" .. idx, v.tex,
                                 subregion.x, subregion.y,
-                                subregion.w, subregion.h
+                                subregion.w, subregion.h,
+                                v.a or 0, v.b or 0, v.rect or false
                             )
                             idx = idx + 1
                         end
                     end
                 else
-                    pager:add_img_group(k, v.tex, v.rows, v.columns, v.region)
+                    pager:add_img_group(k, v.tex, v.rows, v.columns, v.region, v.a or 0, v.b or 0, v.rect or false)
                 end
                 yield_for_frame()
             end
@@ -207,10 +219,10 @@ function Loader.LoadResAsync(resdef, pager)
                         region.x, region.y,
                         sw, sh,
                         v.columns, v.rows,
-                        v.aniv
+                        v.aniv, v.a or 0, v.b or 0, v.rect or false
                     )
                 else
-                    pager:add_anim(k, v.tex, v.rows, v.columns, v.aniv, v.region)
+                    pager:add_anim(k, v.tex, v.rows, v.columns, v.aniv, v.region, v.a or 0, v.b or 0, v.rect or false)
                 end
                 yield_for_frame()
             end
