@@ -85,7 +85,7 @@ local TexturePager = Class {
         local sw, sh = region.w / columns, region.h / rows
         self.anim_list[anim] = {
             tex,
-            region[1], region[2], sw, sh,
+            region.x, region.y, sw, sh,
             columns, rows, aniv, a, b, rect
         }
     end,
